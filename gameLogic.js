@@ -9,9 +9,10 @@ angular.module('myApp.gameLogic', []).service('gameLogic', function () {
   function copyObject(object) {
     return angular.copy(object);
   }
-
-  function init(){
-    var i,j,board=[];
+  
+  function getInitialBoard(){
+  
+  	var i,j,board=[];
 
     for(i=0;i<10;i+=1)
       {
@@ -24,7 +25,13 @@ angular.module('myApp.gameLogic', []).service('gameLogic', function () {
 
     board[0][3]='A';board[0][6]='A';board[3][0]='A';board[3][9]='A';
     board[6][0]='B';board[6][9]='B';board[9][3]='B';board[9][6]='B';
+    
+    return board;
+    }
 
+  function init(){
+    
+    var board = getInitialBoard();
     return {'turnInfo':{ctr:2,pawn:'A'},'pawnDelta':{row:'',col:''},'board':board};
 
   }
@@ -70,6 +77,20 @@ angular.module('myApp.gameLogic', []).service('gameLogic', function () {
   }
 
   function createMove(pawnPosition, pawnDelta, turnIndexBeforeMove, stateBeforeMove){
+  
+  	if(stateBeforeMove==="{}")
+  	{
+  		stateBeforeMove = init();
+  	}
+  	else
+  	{
+  		var temp = angular.fromJson(stateBeforeMove);
+  		stateBeforeMove = temp;
+  	}
+  	
+  	if(turnIndexBeforeMove===0) {turnIndexBeforeMove = {turnIndex:0};}
+  	if(turnIndexBeforeMove===1) {turnIndexBeforeMove = {turnIndex:1};}
+  	
     var board = stateBeforeMove.board,
     	turnInfo = stateBeforeMove.turnInfo,
     	newTurn = turnIndexBeforeMove,        //copy value of current turn
@@ -114,7 +135,6 @@ angular.module('myApp.gameLogic', []).service('gameLogic', function () {
       winner = getWinner(boardAfterMove,boardAfterMove[pawnPosition.row][pawnPosition.col]);
       if(winner==='')
       {	
-      		console.log("no winner");
           if(turnIndexBeforeMove.turnIndex===0){newTurn.turnIndex=1;newTurnInfo.ctr=2;newTurnInfo.pawn='B';}
           else if(turnIndexBeforeMove.turnIndex===1){newTurn.turnIndex=0;newTurnInfo.ctr=2;newTurnInfo.pawn='A';}
       }
@@ -480,7 +500,7 @@ angular.module('myApp.gameLogic', []).service('gameLogic', function () {
     expectedMove,
     board = stateBeforeMove.board;
     
-    console.log(params)
+//    console.log(params)
 
  	turnIndexBeforeMove = (turnIndexBeforeMove===0) ? {turnIndex:0} : {turnIndex:1};
 
@@ -492,6 +512,7 @@ angular.module('myApp.gameLogic', []).service('gameLogic', function () {
     var pawnDelta = move[3].set.value,
     pawnPosition = move[2].set.value;
     
+    console.log(move);
 //    var x = new Error();
 
  	try{
@@ -517,12 +538,14 @@ angular.module('myApp.gameLogic', []).service('gameLogic', function () {
     }
 	catch(x)
 	{
-//		console.log(x);
+	//	console.log(x);
 		return false;
 	}
 	}
 
   this.isMoveOk = isMoveOk;
+  this.createMove = createMove;
+  this.getInitialBoard = getInitialBoard;
   this.getExampleGame = getExampleGame;
   this.getRiddles = getRiddles;
 

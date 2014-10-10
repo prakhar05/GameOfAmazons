@@ -1,0 +1,64 @@
+table {
+  border-collapse: collapse;
+  border : 4px solid #2B0E00;
+}
+body {
+  background: url('img/bck.jpg'); 
+  margin: 0px;
+  padding: 0px;
+  border:none;
+}
+.cell {
+  text-align: center;
+  vertical-align: middle;
+  font-family: "Helvetica";
+  font-size: 8pt;
+  width: 15px;
+  height: 15px;
+  border : none;
+  margin: 0px;
+  padding: 0px;
+  position : relative;
+  background : #663300;
+  z-index:1;
+}
+
+.o {
+  background-image: url('img/tile.jpg');
+  background-size: 15px 15px;
+  
+}
+
+.e {
+  background : #FFFFFF;
+  background-size: 10px 10px;
+}
+
+.pawn{
+  height: 13px;
+  width:13px;
+  position: relative;
+  z-index:2;
+  cursor:pointer;
+} 
+
+.arrow{
+  height:11px;
+  width: 11px;
+  bottom : 2px;
+  right : 2px;
+  position: absolute;
+  z-index:2;
+  cursor:pointer;
+} 
+
+
+/*
+.r {
+  border-right: 1pt solid black;
+}
+.b {
+  border-bottom: 1pt solid black;
+}
+
+*/
