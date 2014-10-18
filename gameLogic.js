@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('myApp.gameLogic', []).service('gameLogic', function () {
+angular.module('myApp').service('gameLogic', function () {
 
-   function isEqual(object1, object2) {
+  function isEqual(object1, object2) {
     return angular.equals(object1, object2);
   }
 
@@ -492,7 +492,104 @@ angular.module('myApp.gameLogic', []).service('gameLogic', function () {
 
         return riddles;
     }
-
+    
+  function createComputerMove(stateBeforeMove, turnIndexBeforeMove){
+  	var temp = angular.fromJson(stateBeforeMove);
+  	stateBeforeMove = temp;
+  	var pawnPosList = [];
+  	var pawnDelList = {'1':[],'2':[],'3':[],'4':[]};
+  	var pawnPosition,pawnDelta;
+  	var i,j,index=1;
+  	var board = stateBeforeMove.board;
+  	var turnInfo = stateBeforeMove.turnInfo;
+  	
+//   	console.log(stateBeforeMove);
+//   	console.log(turnIndexBeforeMove);
+  	
+  	if(turnInfo.ctr===2){
+  	for(i=0;i<10;i+=1){
+  		for(j=0;j<10;j+=1){
+  			if((turnIndexBeforeMove===0 && board[i][j]==='A') ||
+  				(turnIndexBeforeMove===1 && board[i][j]==='B')){
+  				var tempPos = {row:i,col:j};
+  				pawnPosList.push(tempPos);
+  			}
+  		}
+  	}
+  	}
+  	else{
+  		pawnPosList.push(stateBeforeMove.pawnDelta);
+  	}
+  	
+  	console.log(pawnPosList);
+//   	get list of possible pawndeltas for each pawn positiong and list them as
+//   	{1:[{row:..,col:..},{row:..,col:..}..],
+//   	 2:[{row:..,col:..},{row:..,col:..}..],
+//   	 .
+//   	 .
+//   	 }
+  	for(i = 0; i<pawnPosList.length; i+=1){
+  		var pos = pawnPosList[i];
+  		for(j=pos.col+1;j<10;j+=1){
+  			if(board[pos.row][j] === ''){
+  			var temp = {row:pos.row,col:j};
+  			pawnDelList[index].push(temp);} //East
+  			else{break;}}
+  		for(j=pos.col-1;j>=0;j-=1){
+  			if(board[pos.row][j] === ''){var temp = {row:pos.row,col:j};pawnDelList[index].push(temp);} //West
+  			else{break;}}
+  		for(j=pos.row+1;j<10;j+=1){
+  			if(board[j][pos.col] === ''){var temp = {row:j,col:pos.col};pawnDelList[index].push(temp);} //south
+  			else{break;}}
+  		for(j=pos.row-1;j>=0;j-=1){
+  			if(board[j][pos.col] === ''){var temp = {row:j,col:pos.col};pawnDelList[index].push(temp);} //north
+  			else{break;}}
+  			
+  		var startRow=pos.row+1,startCol=pos.col+1;	
+  		while(startRow<10 && startCol<10){
+  			if(board[startRow][startCol] === ''){
+  			var temp = {row:startRow,col:startCol};pawnDelList[index].push(temp);startRow+=1;startCol+=1;} //SE
+  			else{break;}}
+  		
+  		startRow=pos.row+1,startCol=pos.col-1;
+  		while(startRow<10 && startCol>=0){
+  			if(board[startRow][startCol] === ''){
+  			var temp = {row:startRow,col:startCol};pawnDelList[index].push(temp);startRow+=1;startCol-=1;} //SW
+  			else{break;}}
+  			
+  		startRow=pos.row-1,startCol=pos.col+1;
+  		while(startRow>=0 && startCol<10){
+  			if(board[startRow][startCol] === ''){var temp = {row:startRow,col:startCol};pawnDelList[index].push(temp);
+  			startRow-=1;startCol+=1;} //NE
+  			else{break;}}
+  			
+  		startRow=pos.row-1,startCol=pos.col-1;
+  		while(startRow>=0 && startCol>=0){
+  			if(board[startRow][startCol] === ''){
+  			var temp = {row:startRow,col:startCol};pawnDelList[index].push(temp);startRow-=1;startCol-=1;} //NW
+  			else{break;}}
+  	
+  		index+=1;
+  	}
+  	
+  	if(turnInfo.ctr===2){
+  	var pawnNumber = Math.floor((Math.random()*4)+1);	//get number between 1 and 4
+  	}  
+  	else{
+  	pawnNumber = 1;
+  	}
+    pawnPosition = pawnPosList[pawnNumber-1];			   //get pawn Position of that pawn
+  	var listLen = pawnDelList[pawnNumber].length;    // get length of array of that pawns possible moves
+  	var pawnDelNumber = Math.floor((Math.random()*listLen)); // generate a random number between 0 and length from prev step
+  	var tempArray = pawnDelList[pawnNumber];				//extract the array from the main list
+  	pawnDelta = tempArray[pawnDelNumber];				//get delta position at random index using pawnDelNumber
+  	
+  	console.log(pawnPosition,pawnDelta);
+  	var randomMove = createMove(pawnPosition,pawnDelta,turnIndexBeforeMove,stateBeforeMove);
+  	
+  	return randomMove;
+  }
+    
   function isMoveOk(params){
 	var move = params.move,
     turnIndexBeforeMove = params.turnIndexBeforeMove,     
@@ -545,8 +642,12 @@ angular.module('myApp.gameLogic', []).service('gameLogic', function () {
 
   this.isMoveOk = isMoveOk;
   this.createMove = createMove;
+  this.createComputerMove = createComputerMove;
   this.getInitialBoard = getInitialBoard;
   this.getExampleGame = getExampleGame;
   this.getRiddles = getRiddles;
+  this.horizontalMoveCheck = horizontalMoveCheck;
+  this.verticalMoveCheck = verticalMoveCheck;
+  this.diagonalMoveCheck = diagonalMoveCheck;
 
 });

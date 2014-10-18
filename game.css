@@ -34,24 +34,68 @@ body {
   background-size: 10px 10px;
 }
 
-.pawn{
-  height: 13px;
-  width:13px;
+.pawnW{
+  content: url("img/QW.png");
+  height: 10px;
+  width:10px;
+  left: 2px;
   position: relative;
   z-index:2;
-  cursor:pointer;
+/*   cursor:pointer; */
 } 
+
+.pawnWselect{
+	transition: outline 1ms linear 1ms;
+  	-webkit-transition: outline 1ms linear 1ms;
+}
+
+.pawnWselect:hover{
+	outline: #7A2900 solid 1pt;
+	cursor:pointer;
+}
+
+.pawnB{
+  content: url("img/QB.png");
+  height: 10px;
+  width:10px;
+  left : 2px;
+  position: relative;
+  z-index:2;
+} 
+
+.pawnBselect{
+	transition: outline 1ms linear 1ms;
+  	-webkit-transition: outline 1ms linear 1ms;
+}
+
+.pawnBselect:hover{
+	outline: #7A2900 solid 1pt;
+	cursor:pointer;
+}
 
 .arrow{
+  content: url("img/occupy.png");
   height:11px;
   width: 11px;
-  bottom : 2px;
-  right : 2px;
+  left: 2px;
+  bottom: 2px;
   position: absolute;
   z-index:2;
-  cursor:pointer;
 } 
 
+.pawnTurn{
+	outline: #7A2900 solid 1pt;
+}
+
+/* 
+.pawnW:hover{
+  outline: #7A2900 solid 1pt;
+}
+
+.pawnB:hover{
+  outline: #7A2900 solid 1pt;
+}
+ */
 
 /*
 .r {

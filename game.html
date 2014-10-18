@@ -1,54 +1,38 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="myApp">
+<html manifest="game.appcache" lang="en" ng-app="myApp">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Game Of The Amazons</title>
   <meta name="description" content="Game of the Amazons">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="components/angular/angular.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js"></script>
+  
   <script src="game.js"></script>
   <script src="gameLogic.js"></script>
-  <script src="messageService.js"></script>
-  <script src="scaleBodyService.js"></script>
-  <script src="components/angular-touch/angular-touch.js"></script>
-  <!-- for local testing purposes ! -->
-  <script src="http://yoav-zibin.github.io/emulator/platform.js"></script>
+  <script src="http://yoav-zibin.github.io/emulator/gameService.js"></script>
+  <script src="http://yoav-zibin.github.io/emulator/messageService.js"></script>
+  <script src="http://yoav-zibin.github.io/emulator/scaleBodyService.js"></script>
+  <script src="http://yoav-zibin.github.io/emulator/stateService.js"></script>
   <link rel="stylesheet" type="text/css" href="game.css">
 </head>
 <body ng-controller="Ctrl" ng-class="{body:true}">
   <table>
     <tr ng-repeat="row in board track by $index">
-      <td ng-repeat="cell in row track by $index"
-        ng-class="{cell:true, 
-        		   o:$parent.$index%2===$index%2, 
-        		   e:$parent.$index%2!==$index%2
-        		   }"
-        ng-click="cellClicked($parent.$index, $index)">
-      <img src="img/QW.png" ng-class="{pawn:true}" ng-show="isPawn($parent.$index,$index,'A')">
-      <img src="img/QB.png" ng-class="{pawn:true}" ng-show="isPawn($parent.$index,$index,'B')">
-      <img src="img/occupy.png" ng-class="{arrow:true}" ng-show="isPawn($parent.$index,$index,'X')">
-        <!-- {{$parent.$index}} {{$index}} -->
+      <td data-drop="true" 
+      	  ng-repeat="cell in row track by $index"
+          ng-class="{cell:true, 
+        		   	 o:$parent.$index%2===$index%2, 
+        		   	 e:$parent.$index%2!==$index%2
+        		   	}"
+          ng-click="cellClicked($parent.$index, $index)">
+      <div ng-class="{pawnW:true, pawnWselect:isWTurn(), pawnTurn:isSelected($parent.$index, $index)}" 
+      				  ng-show="isPawn($parent.$index,$index,'A')"></div>
+      <div ng-class="{pawnB:true, pawnWselect:isBTurn(), pawnTurn:isSelected($parent.$index, $index)}" 
+      				  ng-show="isPawn($parent.$index,$index,'B')"></div>
+      <div ng-class="{arrow:true}" ng-show="isPawn($parent.$index,$index,'X')"></div>
       </td>
     </tr>
   </table>
-  <!--
-  <textarea rows=10 cols=100 readonly>
-    All operations in GameApi:
-    [
-      {setTurn: {turnIndex: 1}},
-      {set: {key: "k", value: "v"}},
-      {endMatch: {endMatchScores: [42, -2]}},
-      {set: {key: "k", value: "v", visibleToPlayerIndexes: [0]}},
-      {setVisibility: {key: "k", visibleToPlayerIndexes: null}},
-      {shuffle: {keys: ["k1", "k2"]}},
-      {setRandomInteger: {key: "k", from: 0, to: 6}},
-      {"delete": {key: "k"}}
-    ]
-  </textarea>
-  <textarea ng-model="move" rows=10 cols=100></textarea>
-  <br>
-  <button ng-click="makeMove()">Make move</button>
-  -->
 </body>
 </html>
