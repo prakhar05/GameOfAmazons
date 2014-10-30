@@ -9,9 +9,9 @@ angular.module('myApp').service('gameLogic', function () {
   function copyObject(object) {
     return angular.copy(object);
   }
-  
+
   function getInitialBoard(){
-  
+
   	var i,j,board=[];
 
     for(i=0;i<10;i+=1)
@@ -25,12 +25,12 @@ angular.module('myApp').service('gameLogic', function () {
 
     board[0][3]='A';board[0][6]='A';board[3][0]='A';board[3][9]='A';
     board[6][0]='B';board[6][9]='B';board[9][3]='B';board[9][6]='B';
-    
+
     return board;
     }
 
   function init(){
-    
+
     var board = getInitialBoard();
     return {'turnInfo':{ctr:2,pawn:'A'},'pawnDelta':{row:'',col:''},'board':board};
 
@@ -77,7 +77,7 @@ angular.module('myApp').service('gameLogic', function () {
   }
 
   function createMove(pawnPosition, pawnDelta, turnIndexBeforeMove, stateBeforeMove){
-  
+
   	if(stateBeforeMove==="{}")
   	{
   		stateBeforeMove = init();
@@ -87,17 +87,18 @@ angular.module('myApp').service('gameLogic', function () {
   		var temp = angular.fromJson(stateBeforeMove);
   		stateBeforeMove = temp;
   	}
-  	
+
   	if(turnIndexBeforeMove===0) {turnIndexBeforeMove = {turnIndex:0};}
   	if(turnIndexBeforeMove===1) {turnIndexBeforeMove = {turnIndex:1};}
-  	
+
     var board = stateBeforeMove.board,
     	turnInfo = stateBeforeMove.turnInfo,
     	newTurn = turnIndexBeforeMove,        //copy value of current turn
     	newTurnInfo = turnInfo,
         pp = pawnPosition,
         pd = pawnDelta,
-        winner;
+        winner,
+        result;
 
 
     var boardAfterMove = copyObject(board);
@@ -134,20 +135,28 @@ angular.module('myApp').service('gameLogic', function () {
     {
       winner = getWinner(boardAfterMove,boardAfterMove[pawnPosition.row][pawnPosition.col]);
       if(winner==='')
-      {	
+      {
           if(turnIndexBeforeMove.turnIndex===0){newTurn.turnIndex=1;newTurnInfo.ctr=2;newTurnInfo.pawn='B';}
           else if(turnIndexBeforeMove.turnIndex===1){newTurn.turnIndex=0;newTurnInfo.ctr=2;newTurnInfo.pawn='A';}
       }
       else
       {
-        newTurn = {GameOver : {WinnerIs : winner}};
+        result = {endMatch: {endMatchScores:(winner === 'A' ? [1, 0] : (winner === 'B' ? [0, 1] : [0, 0]))}};
         newTurnInfo = {ctr:'',pawn:''};
+        var winnerstring = (winner === 'A' ? 'Game Over! White player wins' : 'Game over! Black Player wins');
+        window.alert(winnerstring);
+        return [result,
+                {set: {key: 'turnInfo', value: newTurnInfo}},
+                {set: {key: 'pawnPosition', value :{row:pp.row, col:pp.col}}},
+                {set: {key: 'pawnDelta', value :{row:pd.row, col:pd.col}}},
+                {set: {key: 'board', value: boardAfterMove}}];
       }
     }
     else
     {
       newTurnInfo.ctr = 1;newTurnInfo.pawn = 'X';		//ctr was 2 so make it 1 and change pawn name,player remains same
     }
+
 
     return [{setTurn:newTurn},
     		{set: {key: 'turnInfo', value: newTurnInfo}},
@@ -492,7 +501,7 @@ angular.module('myApp').service('gameLogic', function () {
 
         return riddles;
     }
-    
+
   function createComputerMove(stateBeforeMove, turnIndexBeforeMove){
   	var temp = angular.fromJson(stateBeforeMove);
   	stateBeforeMove = temp;
@@ -502,10 +511,10 @@ angular.module('myApp').service('gameLogic', function () {
   	var i,j,index=1;
   	var board = stateBeforeMove.board;
   	var turnInfo = stateBeforeMove.turnInfo;
-  	
+
 //   	console.log(stateBeforeMove);
 //   	console.log(turnIndexBeforeMove);
-  	
+
   	if(turnInfo.ctr===2){
   	for(i=0;i<10;i+=1){
   		for(j=0;j<10;j+=1){
@@ -520,7 +529,7 @@ angular.module('myApp').service('gameLogic', function () {
   	else{
   		pawnPosList.push(stateBeforeMove.pawnDelta);
   	}
-  	
+
   	console.log(pawnPosList);
 //   	get list of possible pawndeltas for each pawn positiong and list them as
 //   	{1:[{row:..,col:..},{row:..,col:..}..],
@@ -544,37 +553,37 @@ angular.module('myApp').service('gameLogic', function () {
   		for(j=pos.row-1;j>=0;j-=1){
   			if(board[j][pos.col] === ''){var temp = {row:j,col:pos.col};pawnDelList[index].push(temp);} //north
   			else{break;}}
-  			
-  		var startRow=pos.row+1,startCol=pos.col+1;	
+
+  		var startRow=pos.row+1,startCol=pos.col+1;
   		while(startRow<10 && startCol<10){
   			if(board[startRow][startCol] === ''){
   			var temp = {row:startRow,col:startCol};pawnDelList[index].push(temp);startRow+=1;startCol+=1;} //SE
   			else{break;}}
-  		
+
   		startRow=pos.row+1,startCol=pos.col-1;
   		while(startRow<10 && startCol>=0){
   			if(board[startRow][startCol] === ''){
   			var temp = {row:startRow,col:startCol};pawnDelList[index].push(temp);startRow+=1;startCol-=1;} //SW
   			else{break;}}
-  			
+
   		startRow=pos.row-1,startCol=pos.col+1;
   		while(startRow>=0 && startCol<10){
   			if(board[startRow][startCol] === ''){var temp = {row:startRow,col:startCol};pawnDelList[index].push(temp);
   			startRow-=1;startCol+=1;} //NE
   			else{break;}}
-  			
+
   		startRow=pos.row-1,startCol=pos.col-1;
   		while(startRow>=0 && startCol>=0){
   			if(board[startRow][startCol] === ''){
   			var temp = {row:startRow,col:startCol};pawnDelList[index].push(temp);startRow-=1;startCol-=1;} //NW
   			else{break;}}
-  	
+
   		index+=1;
   	}
-  	
+
   	if(turnInfo.ctr===2){
   	var pawnNumber = Math.floor((Math.random()*4)+1);	//get number between 1 and 4
-  	}  
+  	}
   	else{
   	pawnNumber = 1;
   	}
@@ -583,20 +592,20 @@ angular.module('myApp').service('gameLogic', function () {
   	var pawnDelNumber = Math.floor((Math.random()*listLen)); // generate a random number between 0 and length from prev step
   	var tempArray = pawnDelList[pawnNumber];				//extract the array from the main list
   	pawnDelta = tempArray[pawnDelNumber];				//get delta position at random index using pawnDelNumber
-  	
+
   	console.log(pawnPosition,pawnDelta);
   	var randomMove = createMove(pawnPosition,pawnDelta,turnIndexBeforeMove,stateBeforeMove);
-  	
+
   	return randomMove;
   }
-    
+
   function isMoveOk(params){
 	var move = params.move,
-    turnIndexBeforeMove = params.turnIndexBeforeMove,     
+    turnIndexBeforeMove = params.turnIndexBeforeMove,
     stateBeforeMove = params.stateBeforeMove,
     expectedMove,
     board = stateBeforeMove.board;
-    
+
 //    console.log(params)
 
  	turnIndexBeforeMove = (turnIndexBeforeMove===0) ? {turnIndex:0} : {turnIndex:1};
@@ -608,7 +617,7 @@ angular.module('myApp').service('gameLogic', function () {
 
     var pawnDelta = move[3].set.value,
     pawnPosition = move[2].set.value;
-    
+
     console.log(move);
 //    var x = new Error();
 
