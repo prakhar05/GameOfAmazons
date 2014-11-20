@@ -121,8 +121,11 @@ angular.module('myApp',['ngDraggable'])
         else
         	{
         	pawnDelta.row = '';pawnDelta.col = '';
-        	pawnPosition.row= '';pawnPosition.col = '';
-                movCtr=2;
+          if(moveType%2===0)
+            {
+              pawnPosition.row= '';pawnPosition.col = '';
+              movCtr=2;
+            }
         	}
       }
 
