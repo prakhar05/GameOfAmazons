@@ -33,7 +33,7 @@ table {
 }
 
 .e {
-  background : #FFFFFF;
+  background-image : url('img/tile2.jpg');
   background-size: 60px 60px;
 }
 
@@ -81,7 +81,7 @@ table {
 }
 
 .arrow{
-  content: url("img/stop3.png");
+  content: url("img/stop.png");
   height:41px;
   width: 41px;
   left: 9px;
