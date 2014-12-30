@@ -68,22 +68,11 @@ body {
 
 .arrow{
   content: url("img/stop.png");
-<<<<<<< HEAD
   max-width: 60%;
   padding-left: 20%;
   -webkit-animation: mymove 300ms; /* Chrome, Safari, Opera */
   animation: mymove 300ms;
 
-=======
-  height:41px;
-  width: 41px;
-  left: 9px;
-  bottom: 9px;
-  position: absolute;
-  -webkit-animation: mymove 10ms; /* Chrome, Safari, Opera */
-  animation: mymove 10ms;
-/*   z-index:2; */
->>>>>>> FETCH_HEAD
 }
 
 @keyframes mymove{
