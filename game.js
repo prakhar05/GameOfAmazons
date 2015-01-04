@@ -13,7 +13,7 @@ angular.module('myApp',['ngDraggable'])
     var movCtr = 2;
     var moveType = 2;
 
-    var sound = new Audio("audio/move2.mp3");
+    var sound = new Audio("audio/move3.ogg");
     sound.load();
 
     function sendComputerMove() {
